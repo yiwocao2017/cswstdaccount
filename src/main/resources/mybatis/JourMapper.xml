@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.std.account.dao.IJourDAO">
+	<resultMap id="jour_DB_Result" type="jour">
+		<result column="code" property="code" />
+		<result column="pay_group" property="payGroup" />
+		<result column="user_id" property="userId" />
+		<result column="real_name" property="realName" />
+		<result column="account_number" property="accountNumber" />
+		<result column="channel_type" property="channelType" />
+		<result column="channel_order" property="channelOrder" />
+		<result column="biz_type" property="bizType" />
+		<result column="biz_note" property="bizNote" />
+		<result column="trans_amount" property="transAmount" />
+		<result column="pre_amount" property="preAmount" />
+		<result column="post_amount" property="postAmount" />
+		<result column="status" property="status" />
+		<result column="create_datetime" property="createDatetime" />
+		<result column="rollback_user" property="rollbackUser" />
+		<result column="rollback_datetime" property="rollbackDatetime" />
+		<result column="work_date" property="workDate" />
+		<result column="check_user" property="checkUser" />
+		<result column="check_datetime" property="checkDatetime" />
+		<result column="adjust_user" property="adjustUser" />
+		<result column="adjust_datetime" property="adjustDatetime" />
+		<result column="remark" property="remark" />
+		<result column="fee" property="fee" />
+		<result column="system_code" property="systemCode" />
+	</resultMap>
+	<sql id="where_condition">
+		<trim prefix="WHERE" prefixOverrides="AND | OR">
+			<if test="code != null and code != '' ">
+				AND t.code = #{code}
+			</if>
+			<if test="payGroup != null and payGroup != '' ">
+				AND t.pay_group = #{payGroup}
+			</if>
+			<if test="userId != null and userId != '' ">
+				AND t.user_id = #{userId}
+			</if>
+			<if test="realName != null and realName != '' ">
+				AND t.real_name = #{realName}
+			</if>
+			<if test="realNameQuery != null and realNameQuery != '' ">
+			    AND t.real_name like "%"#{realNameQuery}"%"
+			</if>
+			<if test="accountNumber != null and accountNumber != '' ">
+				AND t.account_number = #{accountNumber}
+			</if>
+			<choose>
+			     <when test='channelType == "out"'>
+				 	AND t.channel_type not in(0,9,10)
+				 </when>
+				 <otherwise>
+					 <if test="channelType != null and channelType != '' ">
+						AND t.channel_type = #{channelType}
+					 </if>
+				 </otherwise>
+			</choose>
+			<if test="channelOrder != null and channelOrder != '' ">
+				AND t.channel_order = #{channelOrder}
+			</if>
+			<choose>
+			     <when test='accountType == "NOT_P"'>
+				 	AND ta.type not in('P')
+				 </when>
+				 <otherwise>
+					 <if test="accountType != null and accountType != '' ">
+						 AND ta.type = #{accountType}
+					 </if>
+				 </otherwise>
+			</choose>
+			<if test="currency != null and currency != '' ">
+				AND ta.currency = #{currency}
+			</if>
+			<if test="bizType != null and bizType != '' ">
+				AND t.biz_type = #{bizType}
+			</if>
+			<if test="bizTypeList != null and bizTypeList != '' ">
+				AND t.biz_type in 
+                <foreach item="item" index="index" collection="bizTypeList" open="(" separator="," close=")">
+	            	#{item}
+                </foreach> 
+			</if>
+			<choose>
+			     <when test='status == "effect"'>
+				 	AND (t.status in(1,3,4,5,7) OR (t.biz_type=-11 and t.status=0))
+				 </when>
+				 <when test='status == "678"'>
+				 	AND t.status in(6,7,8)
+				 </when>
+				 <otherwise>
+					<if test="status != null and status != '' ">
+						AND t.status = #{status}
+					</if>
+				 </otherwise>
+			</choose>
+			<if test="createDatetimeStart != null and createDatetimeStart != '' ">
+				<![CDATA[AND t.create_datetime >= #{createDatetimeStart}]]>
+			</if>
+			<if test="createDatetimeEnd != null and createDatetimeEnd != '' ">
+				<![CDATA[AND t.create_datetime <= #{createDatetimeEnd}]]>
+			</if>
+			<if test="systemCode != null and systemCode != '' ">
+				AND t.system_code = #{systemCode}
+			</if>
+		</trim>
+	</sql>
+	<select id="select_jour" parameterType="jour" resultMap="jour_DB_Result">
+		SELECT
+		t.code
+		,t.pay_group
+		,t.user_id
+		,t.real_name
+		,t.account_number
+		,ta.currency
+		,t.channel_type
+		
+		,t.channel_order
+		,t.biz_type
+		,t.biz_note
+		,t.trans_amount
+		,t.pre_amount
+		
+		,t.post_amount
+		,t.status
+		,t.create_datetime
+		,t.rollback_user
+		,t.rollback_datetime
+		
+		,t.work_date
+		,t.check_user
+		,t.check_datetime
+		,t.adjust_user
+		,t.adjust_datetime
+		
+		,t.fee
+		,t.remark
+		,t.system_code
+		FROM
+		tstd_jour t inner join tstd_account ta on t.account_number = ta.account_number
+		<include refid="where_condition" />
+		<trim prefix="ORDER BY ">
+			<if test="order != null and order != '' ">
+				t.${order}
+			</if>
+		</trim>
+	</select>
+
+	<select id="select_jour_count" parameterType="jour"
+		resultType="java.lang.Long">
+		SELECT count(1) FROM tstd_jour t inner join tstd_account ta on t.account_number = ta.account_number
+		<include refid="where_condition" />
+	</select>
+
+	<insert id="insert_jour" parameterType="jour">
+		INSERT INTO
+		tstd_jour(
+		code
+		,pay_group
+		,user_id
+		,real_name
+		,account_number
+		,channel_type
+		,channel_order
+		,biz_type
+		,biz_note
+		,trans_amount
+		,pre_amount
+		,post_amount
+		,status
+		,create_datetime
+		,rollback_user
+		,rollback_datetime
+		,work_date
+		,check_user
+		,check_datetime
+		,adjust_user
+		,adjust_datetime
+		,remark
+		,fee
+		,system_code
+		)
+		VALUES(
+		#{code}
+		,#{payGroup}
+		,#{userId}
+		,#{realName}
+		,#{accountNumber}
+		,#{channelType}
+		,#{channelOrder}
+		,#{bizType}
+		,#{bizNote}
+		,#{transAmount}
+		,#{preAmount}
+		,#{postAmount}
+		,#{status}
+		,#{createDatetime}
+		,#{rollbackUser}
+		,#{rollbackDatetime}
+		,#{workDate}
+		,#{checkUser}
+		,#{checkDatetime}
+		,#{adjustUser}
+		,#{adjustDatetime}
+		,#{remark}
+		,#{fee}
+		,#{systemCode}
+		)
+	</insert>
+	
+	<update id="update_jour_callback" parameterType="jour">
+		UPDATE tstd_jour
+		SET
+		status= #{status}
+		,channel_order = #{channelOrder}
+		,pre_amount = #{preAmount}
+		,post_amount = #{postAmount}
+		,rollback_user=#{rollbackUser}
+		,rollback_datetime=#{rollbackDatetime}
+		,remark=#{remark}
+		WHERE
+		code = #{code}	
+	</update>
+	
+	<update id="update_check_jour" parameterType="jour">
+		UPDATE tstd_jour
+		SET
+		status= #{status}
+		,check_user=#{checkUser}
+		,check_datetime=#{checkDatetime}
+		,remark=#{remark}
+		WHERE
+		code = #{code}	
+	</update>
+	
+	<update id="update_adjust_jour" parameterType="jour">
+		UPDATE tstd_jour
+		SET
+		status= #{status}
+		,pre_amount = #{preAmount}
+		,post_amount = #{postAmount}
+		,adjust_user=#{adjustUser}
+		,adjust_datetime=#{adjustDatetime}
+		,remark=#{remark}
+		WHERE
+		code = #{code}	
+	</update>
+	
+	<update id="update_adjust_status" parameterType="jour">
+		UPDATE tstd_jour
+		SET
+		status= #{status}
+		,adjust_user=#{adjustUser}
+		,adjust_datetime=#{adjustDatetime}
+		,remark=#{remark}
+		WHERE
+		code = #{code}	
+	</update>
+</mapper>

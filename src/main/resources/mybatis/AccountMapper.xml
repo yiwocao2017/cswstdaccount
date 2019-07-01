@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.std.account.dao.IAccountDAO">
+	<resultMap id="account_DB_Result" type="account">
+		<result column="account_number" property="accountNumber" />
+		<result column="user_id" property="userId" />
+		<result column="real_name" property="realName" />
+		<result column="type" property="type" />
+		<result column="status" property="status" />
+		<result column="currency" property="currency" />	
+		<result column="amount" property="amount" />
+		<result column="frozen_amount" property="frozenAmount" />
+		<result column="md5" property="md5" />	
+		<result column="add_amount" property="addAmount" />
+		<result column="in_amount" property="inAmount" />
+		<result column="out_amount" property="outAmount" />
+		<result column="create_datetime" property="createDatetime" />	
+		<result column="last_order" property="lastOrder" />	
+		<result column="system_code" property="systemCode" />
+	</resultMap>
+	<sql id="where_condition">
+		<trim prefix="WHERE" prefixOverrides="AND | OR">	
+			<if test="accountNumber != null and accountNumber != '' ">
+				AND t.account_number = #{accountNumber}
+			</if>
+			<if test="userId != null and userId != '' ">
+				AND t.user_id = #{userId}
+			</if>
+			<!-- 模糊查询调账 -->
+			<if test="sysUser != null and sysUser != '' ">
+				AND t.user_id like "%"#{sysUser}"%"
+			</if>
+			<if test="realName != null and realName != '' ">
+				AND t.real_name = #{realName}
+			</if>
+			<if test="realNameQuery != null and realNameQuery != '' ">
+			    AND t.real_name like "%"#{realNameQuery}"%"
+			</if>
+			<choose>
+			     <when test='type == "NOT_P"'>
+				 	AND t.type not in('P')
+				 </when>
+				 <otherwise>
+					 <if test="type != null and type != '' ">
+						AND t.type = #{type}
+					</if>
+				 </otherwise>
+			</choose>
+			<if test="status != null and status != '' ">
+				AND t.status = #{status}
+			</if>
+			<if test="currency != null and currency != '' ">
+				AND t.currency = #{currency}
+			</if>
+			<if test="createDatetimeStart != null and createDatetimeStart != '' ">
+				<![CDATA[AND t.create_datetime >= #{createDatetimeStart}]]>
+			</if>
+			<if test="createDatetimeEnd != null and createDatetimeEnd != '' ">
+				<![CDATA[AND t.create_datetime <= #{createDatetimeEnd}]]>
+			</if>
+			<if test="lastOrder != null and lastOrder != '' ">
+				AND t.last_order = #{lastOrder}
+			</if>
+			<if test="systemCode != null and systemCode != '' ">
+				AND t.system_code = #{systemCode}
+			</if>
+		</trim>
+	</sql>
+	
+	<select id="select_account" parameterType="account" resultMap="account_DB_Result">
+		SELECT
+		t.account_number
+		,t.user_id
+		,t.real_name
+		,t.type
+		,t.status
+		
+		,t.currency
+		,t.amount
+		,t.frozen_amount
+		,t.md5
+		,t.add_amount
+		
+		,t.in_amount
+		,t.out_amount
+		,t.create_datetime
+		
+		,t.last_order
+		,t.system_code
+		FROM
+		tstd_account t
+		<include refid="where_condition"/>
+		<trim prefix="ORDER BY ">
+			<if test="order != null and order != '' ">
+				t.${order}
+			</if>
+		</trim>
+	</select>
+
+	<select id="select_account_count" parameterType="account" resultType="java.lang.Long">
+		SELECT count(1) FROM tstd_account t 
+		<include refid="where_condition"/>
+	</select>
+
+	<insert id="insert_account" parameterType="account">
+		INSERT INTO tstd_account(
+		account_number
+		,user_id
+		,real_name
+		,type
+		,status
+		
+		,currency
+		,amount
+		,frozen_amount
+		,md5
+		,add_amount
+		
+		,in_amount
+		,out_amount
+		,create_datetime
+		,system_code
+		)
+		VALUES(
+		#{accountNumber}
+		,#{userId}
+		,#{realName}
+		,#{type}
+		,#{status}
+		
+		,#{currency}
+		,#{amount}
+		,#{frozenAmount}
+		,#{md5}
+		,#{addAmount}
+		
+		,#{inAmount}
+		,#{outAmount}
+		,#{createDatetime}
+		,#{systemCode}
+		)
+	</insert>
+	
+	<update id="update_realName" parameterType="account">
+		UPDATE tstd_account
+		SET
+		real_name= #{realName}
+		WHERE
+		account_number = #{accountNumber}
+	</update>
+	
+	<update id="update_account_amount" parameterType="account">
+		UPDATE tstd_account
+		SET
+		amount= #{amount}
+		,add_amount= #{addAmount}
+		,md5 = #{md5}
+		,last_order = #{lastOrder}
+		WHERE
+		account_number = #{accountNumber}
+	</update>
+	
+	<update id="update_account_frozen_amount" parameterType="account">
+		UPDATE tstd_account
+		SET
+		amount= #{amount}
+		,frozen_amount = #{frozenAmount}
+		,md5 = #{md5}
+		,last_order = #{lastOrder}
+		WHERE
+		account_number = #{accountNumber}
+	</update>
+	
+	<update id="update_account_realName" parameterType="account">
+		UPDATE tstd_account
+		SET
+		real_name= #{realName}
+		WHERE
+		user_id = #{userId}	
+	</update>
+	
+	<update id="update_account_status" parameterType="account">
+		UPDATE tstd_account
+		SET
+		status= #{status}
+		WHERE
+		account_number = #{accountNumber}	
+	</update>
+</mapper>

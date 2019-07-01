@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.std.account.dao.IBankCardDAO">
+	<resultMap id="bankcard_DB_Result" type="bankcard">
+		<result column="code" property="code" />
+		<result column="bankcard_number" property="bankcardNumber" />
+		<result column="bank_code" property="bankCode" />
+		<result column="bank_name" property="bankName" />
+		<result column="subbranch" property="subbranch" />
+		<result column="bind_mobile" property="bindMobile" />
+		<result column="user_id" property="userId" />
+		<result column="real_name" property="realName" />
+		<result column="type" property="type" />
+		<result column="status" property="status" />
+		<result column="currency" property="currency" />
+		<result column="amount" property="amount" />
+		<result column="frozen_amount" property="frozenAmount" />
+		<result column="md5" property="md5" />
+		<result column="create_datetime" property="createDatetime" />
+		<result column="remark" property="remark" />
+		<result column="last_order" property="lastOrder" />
+		<result column="system_code" property="systemCode" />
+	</resultMap>
+	<sql id="where_condition">
+		<trim prefix="WHERE" prefixOverrides="AND | OR">
+			<if test="code != null and code != '' ">
+				AND t.code = #{code}
+			</if>
+			<if test="userId != null and userId != '' ">
+				AND t.user_id = #{userId}
+			</if>
+			<if test="status != null and status != '' ">
+				AND t.status = #{status}
+			</if>
+			<if test="type != null and type != '' ">
+				AND t.type = #{type}
+			</if>
+			<if test="bankcardNumber != null and bankcardNumber != '' ">
+				AND t.bankcard_number = #{bankcardNumber}
+			</if>
+			<if test="bankCode != null and bankCode != '' ">
+				AND t.bank_code = #{bankCode}
+			</if> 
+			<if test="bankName != null and bankName != '' ">
+				AND t.bank_name = #{bankName}
+			</if> 
+			<if test="systemCode != null and systemCode != '' ">
+				AND t.system_code = #{systemCode}
+			</if>
+		</trim>
+	</sql>
+	<select id="select_bankcard" parameterType="bankcard" resultMap="bankcard_DB_Result">
+		SELECT
+		t.code
+		,t.bankcard_number
+		,t.bank_code
+		,t.bank_name
+		,t.subbranch
+		,t.bind_mobile
+		,t.user_id
+		,t.real_name
+		,t.type
+		,t.status
+		,t.currency
+		,t.amount
+		,t.frozen_amount
+		,t.md5
+		,t.create_datetime
+		,t.remark
+		,t.last_order
+		,t.system_code
+		FROM
+		tstd_bankcard t
+		<include refid="where_condition" />
+		<trim prefix="ORDER BY ">
+			<if test="order != null and order != '' ">
+				t.${order}
+			</if>
+		</trim>
+	</select>
+
+	<select id="select_bankcard_count" parameterType="bankcard"
+		resultType="java.lang.Long">
+		SELECT count(1) FROM tstd_bankcard t
+		<include refid="where_condition" />
+	</select>
+
+	<insert id="insert_bankcard" parameterType="bankcard">
+		INSERT INTO
+		tstd_bankcard(
+		code
+		,bankcard_number
+		,bank_code
+		,bank_name
+		,subbranch
+		,bind_mobile
+		,user_id
+		,real_name
+		,type
+		,status
+		,currency
+		,amount
+		,frozen_amount
+		,md5
+		,create_datetime
+		,remark
+		,last_order
+		,system_code
+		)
+		VALUES(
+		#{code}
+		,#{bankcardNumber}
+		,#{bankCode}
+		,#{bankName}
+		,#{subbranch}
+		,#{bindMobile}
+		,#{userId}
+		,#{realName}
+		,#{type}
+		,#{status}
+		,#{currency}
+		,#{amount}
+		,#{frozenAmount}
+		,#{md5}
+		,#{createDatetime}
+		,#{remark}
+		,#{lastOrder}
+		,#{systemCode}
+		)
+	</insert>
+
+	<update id="update_bankcard" parameterType="bankcard">
+		UPDATE tstd_bankcard
+		SET
+		bankcard_number = #{bankcardNumber}
+		,bank_code = #{bankCode}
+		,bank_name = #{bankName}
+		,subbranch = #{subbranch}
+		,bind_mobile = #{bindMobile}
+		,status = #{status}
+		,remark = #{remark}
+		WHERE code = #{code}
+	</update>
+	
+	<delete id="delete_bankcard" parameterType="bankcard">
+		DELETE FROM tstd_bankcard
+		WHERE code = #{code}
+	</delete>
+
+</mapper>

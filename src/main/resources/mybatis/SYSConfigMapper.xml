@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.std.account.dao.ISYSConfigDAO">
+	<resultMap id="sysConfig_DB_Result" type="sysConfig">
+		<result column="id" property="id" />
+		<result column="type" property="type" />
+		<result column="ckey" property="ckey" />
+		<result column="cvalue" property="cvalue" />
+		
+		<result column="updater" property="updater" />
+		<result column="update_datetime" property="updateDatetime" />
+		<result column="remark" property="remark" />
+		<result column="company_code" property="companyCode" />
+		<result column="system_code" property="systemCode" />
+	</resultMap>
+	<sql id="where_condition">
+		<trim prefix="WHERE" prefixOverrides="AND | OR">
+			<if test="id != null">
+				AND t.id = #{id}
+			</if>	
+			<if test="type != null and type != '' ">
+				AND t.type = #{type}
+			</if>
+			<if test="typeList != null and typeList != '' ">
+				AND t.type in 
+                <foreach item="item" index="index" collection="typeList" open="(" separator="," close=")">
+	            	#{item}
+                </foreach> 
+			</if>	
+			<if test="ckey != null and ckey != '' ">
+				AND t.ckey = #{ckey}
+			</if>	
+			<if test="ckeyForQuery != null and ckeyForQuery != '' ">
+				AND t.ckey like "%"#{ckeyForQuery}"%"
+			</if>
+			<if test="updater != null and updater != '' ">
+				AND t.updater = #{updater}
+			</if>	
+			<if test="companyCode != null and companyCode != '' ">
+				AND t.company_code = #{companyCode}
+			</if>
+			<if test="systemCode != null and systemCode != '' ">
+				AND t.system_code = #{systemCode}
+			</if>
+		</trim>
+	</sql>
+	<select id="select_sysConfig" parameterType="sysConfig" resultMap="sysConfig_DB_Result">
+		SELECT
+		id
+		,type
+		,ckey
+		,cvalue
+		
+		,updater
+		,update_datetime
+		,remark
+		,company_code
+		,system_code
+		FROM
+		tsys_config t 
+		<include refid="where_condition" />
+	</select>
+
+	<select id="select_sysConfig_count" parameterType="sysConfig" resultType="java.lang.Long">
+		SELECT count(1) FROM tsys_config t 
+		<include refid="where_condition" />
+	</select>
+	
+	<insert id="insert_sysConfig" parameterType="sysConfig" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO tsys_config(
+		type
+		,ckey
+		,cvalue
+		
+		,updater
+		,update_datetime
+		,remark
+		,company_code
+		,system_code
+		)
+		VALUES(
+		#{type}
+		,#{ckey}
+		,#{cvalue}
+		
+		,#{updater}
+		,#{updateDatetime}
+		,#{remark}
+		,#{companyCode}
+		,#{systemCode}
+		)
+	</insert>
+	
+	<update id="update_value" parameterType="sysConfig">
+		UPDATE tsys_config SET
+		cvalue = #{cvalue}
+		,updater=#{updater}
+		,update_datetime=#{updateDatetime}
+		,remark=#{remark}
+		WHERE id = #{id}
+	</update>
+</mapper>

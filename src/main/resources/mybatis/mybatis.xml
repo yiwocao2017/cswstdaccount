@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+	<typeAliases>		
+		<typeAlias alias="account" type="com.std.account.domain.Account" />
+		<typeAlias alias="jour" type="com.std.account.domain.Jour" />
+		<typeAlias alias="companyChannel" type="com.std.account.domain.CompanyChannel" />
+		<typeAlias alias="channelBank" type="com.std.account.domain.ChannelBank" />
+		
+		<typeAlias alias="sysDict" type="com.std.account.domain.SYSDict" />
+		<typeAlias alias="bankcard" type="com.std.account.domain.Bankcard" />
+		<typeAlias alias="exchangeCurrency" type="com.std.account.domain.ExchangeCurrency" />
+		<typeAlias alias="sysConfig" type="com.std.account.domain.SYSConfig" />
+	</typeAliases>
+</configuration>

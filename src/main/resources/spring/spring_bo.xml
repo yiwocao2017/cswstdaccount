@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:aop="http://www.springframework.org/schema/aop"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:jdbc="http://www.springframework.org/schema/jdbc" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="
+		http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+		http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc-4.0.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+	
+	<!-- 分页BO层注入paginableDao -->
+	<bean id="accountBO" class="com.std.account.bo.impl.AccountBOImpl">
+		<property name="paginableDAO" ref="accountDAOImpl" />
+	</bean>
+	<bean id="jourBO" class="com.std.account.bo.impl.JourBOImpl">
+		<property name="paginableDAO" ref="jourDAOImpl" />
+	</bean>
+	<bean id="companyChannelBO" class="com.std.account.bo.impl.CompanyChannelBOImpl">
+		<property name="paginableDAO" ref="companyChannelDAOImpl"/>
+	</bean>	
+	<bean id="channelBankBO" class="com.std.account.bo.impl.ChannelBankBOImpl">
+		<property name="paginableDAO" ref="channelBankDAOImpl"/>
+	</bean>	
+	
+	<bean id="sysDictBO" class="com.std.account.bo.impl.SYSDictBOImpl">
+		<property name="paginableDAO" ref="sysDictDAOImpl"/>
+	</bean>	
+	
+	<bean id="bankcardBO" class="com.std.account.bo.impl.BankcardBOImpl">
+		<property name="paginableDAO" ref="bankcardDAOImpl"/>
+	</bean>	
+	
+	<bean id="exchangeCurrencyBO" class="com.std.account.bo.impl.ExchangeCurrencyBOImpl">
+		<property name="paginableDAO" ref="exchangeCurrencyDAOImpl"/>
+	</bean>	
+	
+	<bean id="sysConfigBO" class="com.std.account.bo.impl.SYSConfigBOImpl">
+		<property name="paginableDAO" ref="sysConfigDAOImpl"/>
+	</bean>	
+</beans>

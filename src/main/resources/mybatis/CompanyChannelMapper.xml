@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.std.account.dao.ICompanyChannelDAO">
+	<resultMap id="companyChannel_DB_Result" type="companyChannel">
+		<result column="id" property="id"/>
+		<result column="company_code" property="companyCode"/>
+		<result column="company_name" property="companyName"/>
+		<result column="channel_type" property="channelType"/>
+		<result column="status" property="status"/>
+		
+		<result column="channel_company" property="channelCompany"/>
+		<result column="private_key1" property="privateKey1"/>
+		<result column="private_key2" property="privateKey2"/>
+		<result column="private_key3" property="privateKey3"/>
+		<result column="private_key4" property="privateKey4"/>
+		
+		<result column="private_key5" property="privateKey5"/>
+		<result column="page_url" property="pageUrl"/>
+		<result column="error_url" property="errorUrl"/>
+		<result column="back_url" property="backUrl"/>
+		<result column="fee" property="fee"/>
+		
+		<result column="remark" property="remark"/>
+		<result column="system_code" property="systemCode"/>
+	</resultMap>
+	<sql id="where_condition">
+		<trim prefix="WHERE" prefixOverrides="AND | OR">
+			<if test="id != null and id != '' ">
+				AND t.id = #{id}
+			</if>
+			<if test="companyCode != null and companyCode != '' ">
+				AND t.company_code = #{companyCode}
+			</if>
+			<if test="companyName != null and companyName != '' ">
+				AND t.company_name = #{companyName}
+			</if>
+			<if test="channelType != null and channelType != '' ">
+				AND t.channel_type = #{channelType}
+			</if>
+			
+			<if test="status != null and status != '' ">
+				AND t.status = #{status}
+			</if>
+			<if test="channelCompany != null and channelCompany != '' ">
+				AND t.channel_company = #{channelCompany}
+			</if>
+			<if test="systemCode != null and systemCode != '' ">
+				AND t.system_code = #{systemCode}
+			</if>
+		</trim>
+	</sql>
+	
+	<select id="select_companyChannel" parameterType="companyChannel" resultMap="companyChannel_DB_Result">
+		SELECT
+		t.id
+		,t.company_code
+		,t.company_name
+		,t.channel_type
+		
+		,t.status
+		,t.channel_company
+		,t.private_key1
+		,t.private_key2
+		,t.private_key3
+		
+		,t.private_key4
+		,t.private_key5
+		,t.page_url
+		,t.error_url
+		,t.back_url
+		
+		,t.fee
+		,t.remark
+		,t.system_code
+		FROM
+		tstd_company_channel t
+		<include refid="where_condition"/>
+		<trim prefix="ORDER BY ">
+			<if test="order != null and order != '' ">
+				t.${order}
+			</if>
+		</trim>
+	</select>
+
+	<select id="select_companyChannel_count" parameterType="companyChannel"
+		resultType="java.lang.Long">
+		SELECT count(1) FROM tstd_company_channel t
+		<include refid="where_condition"/>
+	</select>
+
+	<insert id="insert_companyChannel" parameterType="companyChannel" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO
+		tstd_company_channel(
+		company_code
+		,company_name
+		,channel_type
+		,status
+		
+		,channel_company
+		,private_key1
+		,private_key2
+		,private_key3
+		,private_key4
+		
+		,private_key5
+		,page_url
+		,error_url
+		,back_url
+		,fee
+		
+		,remark
+		,system_code
+		)
+		VALUES(
+		#{companyCode}
+		,#{companyName}
+		,#{channelType}
+		,#{status}
+		
+		,#{channelCompany}
+		,#{privateKey1}
+		,#{privateKey2}
+		,#{privateKey3}
+		,#{privateKey4}
+		
+		,#{privateKey5}
+		,#{pageUrl}
+		,#{errorUrl}
+		,#{backUrl}
+		,#{fee}
+		
+		,#{remark}
+		,#{systemCode}
+		)
+	</insert>
+
+	<update id="update_companyChannel" parameterType="companyChannel">
+		UPDATE tstd_company_channel
+		SET
+		company_code = #{companyCode}
+		,company_name = #{companyName}
+		,channel_type = #{channelType}
+		,status = #{status}
+		
+		,channel_company = #{channelCompany}
+		,private_key = #{privatekey}
+		,page_url = #{pageUrl}
+		,error_url = #{errorUrl}
+		,back_url = #{backUrl}
+		
+		,fee = #{fee}
+		,remark = #{remark}
+		WHERE id = #{id}
+	</update>
+	
+	<delete id="delete_companyChannel" parameterType="companyChannel">
+		DELETE FROM tstd_company_channel
+		WHERE id = #{id}
+	</delete>
+</mapper>

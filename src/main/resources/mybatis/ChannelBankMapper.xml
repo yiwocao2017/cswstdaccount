@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.std.account.dao.IChannelBankDAO">
+	<resultMap id="channelBank_DB_Result" type="channelBank">
+		<result column="id" property="id" />
+		<result column="bank_code" property="bankCode" />
+		<result column="bank_name" property="bankName" />
+		<result column="channel_type" property="channelType" />
+		
+		<result column="status" property="status" />
+		<result column="channel_bank" property="channelBank" />
+		<result column="max_order" property="maxOrder" />
+		<result column="order_amount" property="orderAmount" />
+		<result column="day_amount" property="dayAmount" />
+		
+		<result column="month_amount" property="monthAmount" />
+		<result column="remark" property="remark" />
+	</resultMap>
+	<sql id="where_condition">
+		<trim prefix="WHERE" prefixOverrides="AND | OR">
+			<if test="id != null and id != '' ">
+				AND t.id = #{id}
+			</if>
+			<if test="bankCode != null and bankCode != '' ">
+				AND t.bank_code = #{bankCode}
+			</if>
+			<if test="bankName != null and bankName != '' ">
+				AND t.bank_name = #{bankName}
+			</if>
+			<if test="channelType != null and channelType != '' ">
+				AND t.channel_type = #{channelType}
+			</if>
+			<if test="channelBank != null and channelBank != '' ">
+				AND t.channel_bank = #{channelBank}
+			</if>
+			
+			<if test="status != null and status != '' ">
+				AND t.status = #{status}
+			</if>
+		</trim>
+	</sql>
+	<select id="select_channelBank" parameterType="channelBank" resultMap="channelBank_DB_Result">
+		SELECT
+		t.id
+		,t.bank_code
+		,t.bank_name 
+		,t.channel_type
+		
+		,t.status
+		,t.channel_bank
+		,t.max_order
+		,t.order_amount
+		,t.day_amount
+		
+		,t.month_amount
+		,t.remark
+		FROM
+		tstd_channel_bank t
+		<include refid="where_condition" />
+		<trim prefix="ORDER BY ">
+			<if test="order != null and order != '' ">
+				t.${order}
+			</if>
+		</trim>
+	</select>
+
+	<select id="select_channelBank_count" parameterType="channelBank"
+		resultType="java.lang.Long">
+		SELECT count(1) FROM tstd_channel_bank t
+		<include refid="where_condition" />
+	</select>
+
+	<insert id="insert_channelBank" parameterType="channelBank" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO
+		tstd_channel_bank(
+		bank_code
+		,bank_name 
+		,channel_type
+		,status
+		,channel_bank
+		
+		,max_order
+		,order_amount
+		,day_amount
+		,month_amount
+		,remark
+		)
+		VALUES(
+		#{bankCode}
+		,#{bankName}
+		,#{channelType}
+		,#{status}
+		,#{channelBank}
+		
+		,#{maxOrder}
+		,#{orderAmount}
+		,#{dayAmount}
+		,#{monthAmount}
+		
+		,#{remark}
+		)
+	</insert>
+
+	<update id="update_channelBank" parameterType="channelBank">
+		UPDATE tstd_channel_bank
+		SET
+		bank_code = #{bankCode}
+		,bank_name  = #{bankName}
+		,channel_type = #{channelType}
+		,status = #{status}
+		
+		,channel_bank = #{channelBank}
+		,max_order = #{maxOrder}
+		,order_amount = #{orderAmount}
+		,day_amount = #{dayAmount}
+		,month_amount = #{monthAmount}
+		
+		,remark = #{remark}
+		WHERE id = #{id}
+	</update>
+	
+	<delete id="delete_channelBank" parameterType="channelBank">
+		DELETE FROM tstd_channel_bank
+		WHERE id = #{id}
+	</delete>
+</mapper>

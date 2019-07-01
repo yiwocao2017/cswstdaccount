@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.std.account.dao.IExchangeCurrencyDAO">
+	<resultMap id="exchangeCurrency_DB_Result" type="exchangeCurrency">
+		<result column="code" property="code" />
+		
+	    <result column="to_user_id" property="toUserId" />
+		<result column="to_amount" property="toAmount" />
+		<result column="to_currency" property="toCurrency" />
+	    <result column="from_user_id" property="fromUserId" />
+		<result column="from_amount" property="fromAmount" />
+		<result column="from_currency" property="fromCurrency" />
+		
+		<result column="create_datetime" property="createDatetime" />
+		<result column="status" property="status" />
+		<result column="updater" property="updater" />
+		<result column="update_datetime" property="updateDatetime" />
+		<result column="remark" property="remark" />
+		
+		<result column="pay_type" property="payType" />
+		<result column="pay_group" property="payGroup" />
+		<result column="pay_code" property="payCode" />
+		<result column="pay_amount" property="payAmount" />
+		<result column="pay_datetime" property="payDatetime" />
+		
+		<result column="company_code" property="companyCode" />
+		<result column="system_code" property="systemCode" />
+	</resultMap>
+	<sql id="where_condition">
+		<trim prefix="WHERE" prefixOverrides="AND | OR">
+			<if test="code != null and code != '' ">
+				AND t.code = #{code}
+			</if>
+			<if test="toUserId != null and toUserId != '' ">
+				AND t.to_user_id = #{toUserId}
+			</if>
+			<if test="toCurrency != null and toCurrency != '' ">
+				AND t.to_currency = #{toCurrency}
+			</if>
+			<if test="fromUserId != null and fromUserId != '' ">
+				AND t.from_user_id = #{fromUserId}
+			</if>
+			<if test="fromCurrency != null and fromCurrency != '' ">
+				AND t.from_currency = #{fromCurrency}
+			</if>
+			<if test="createDatetimeStart != null and createDatetimeStart != '' ">
+				<![CDATA[AND t.create_datetime >= #{createDatetimeStart}]]>
+			</if>
+			<if test="createDatetimeEnd != null and createDatetimeEnd != '' ">
+				<![CDATA[AND t.create_datetime <= #{createDatetimeEnd}]]>
+			</if>
+			<if test="status != null and status != '' ">
+				AND t.status = #{status}
+			</if>
+			<if test="updater != null and updater != '' ">
+				AND t.updater = #{updater}
+			</if>
+			<if test="payType != null and payType != '' ">
+				AND t.pay_type = #{payType}
+			</if>
+			<if test="payGroup != null and payGroup != '' ">
+				AND t.pay_group = #{payGroup}
+			</if>
+			<if test="payCode != null and payCode != '' ">
+				AND t.pay_code = #{payCode}
+			</if>
+			<if test="companyCode != null and companyCode != '' ">
+				AND t.company_code = #{companyCode}
+			</if>
+			<if test="systemCode != null and systemCode != '' ">
+				AND t.system_code = #{systemCode}
+			</if>
+		</trim>
+	</sql>
+	<select id="select_exchangeCurrency" parameterType="exchangeCurrency" resultMap="exchangeCurrency_DB_Result">
+		SELECT
+		t.code
+		
+		,t.to_user_id
+		,t.to_amount
+		,t.to_currency
+		,t.from_user_id
+		,t.from_amount
+		,t.from_currency
+		
+		,t.create_datetime
+		,t.status
+		,updater
+		,update_datetime
+		,remark
+		
+		,t.pay_type
+		,t.pay_group
+		,t.pay_code
+		,t.pay_amount
+		,t.pay_datetime
+		
+		,t.company_code
+		,t.system_code
+		FROM
+		tstd_exchange_currency t
+		<include refid="where_condition" />
+		<trim prefix="ORDER BY ">
+			<if test="order != null and order != '' ">
+				t.${order}
+			</if>
+		</trim>
+	</select>
+
+	<select id="select_exchangeCurrency_count" parameterType="exchangeCurrency"
+		resultType="java.lang.Long">
+		SELECT count(1) FROM tstd_exchange_currency t
+		<include refid="where_condition" />
+	</select>
+
+	<insert id="insert_payExchange" parameterType="exchangeCurrency">
+		INSERT INTO
+		tstd_exchange_currency(
+		code
+		
+		,to_user_id
+		,to_amount
+		,to_currency
+		,from_user_id
+		,from_amount
+		,from_currency
+		
+		,create_datetime
+		,status
+		
+		,pay_type
+		,pay_group
+		,company_code
+		,system_code
+		)
+		VALUES(
+		#{code}
+		
+		,#{toUserId}
+		,#{toAmount}
+		,#{toCurrency}
+		,#{fromUserId}
+		,#{fromAmount}
+		,#{fromCurrency}
+		
+		,#{createDatetime}
+		,#{status}
+		
+		,#{payType}
+		,#{payGroup}
+		,#{companyCode}
+		,#{systemCode}
+		)
+	</insert>
+	
+	
+
+	<update id="update_paySuccess" parameterType="exchangeCurrency">
+		UPDATE tstd_exchange_currency
+		SET
+		status = #{status}
+		,pay_code = #{payCode}
+		,pay_amount = #{payAmount}
+		,pay_datetime = #{payDatetime}
+		WHERE code = #{code}
+	</update>
+	
+	
+	<update id="update_approveExchange" parameterType="exchangeCurrency">
+		UPDATE tstd_exchange_currency
+		SET
+		status = #{status}
+		,updater=#{updater}
+		,update_datetime=#{updateDatetime}
+		,remark=#{remark}
+		WHERE code = #{code}
+	</update>
+</mapper>
